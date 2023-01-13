@@ -24,4 +24,18 @@ function idx_OOS = getOOSlocations(DE) %add ,smear_factor
     
     OOS_spec = 1; % in percent
     idx_OOS = (DE_maxmin == 1) & logical(abs(DE*100) > OOS_spec); % logical index of all oos MAX points
+
+    %smearing of OOS locations
+    smear_factor = 500; %in indicies
+    for i = [1:1:length(idx_OOS)]
+        if idx_OOS(i) == 1;
+            for j = [i+1:1:i + smear_factor]
+                if idx_OOS(j) == 1
+                    idx_OOS(j) = 0;
+                end
+            end
+    end
+
+
+
 end

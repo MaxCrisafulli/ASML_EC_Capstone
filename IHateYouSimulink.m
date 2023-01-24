@@ -18,7 +18,16 @@ classdef IHateYouSimulink < matlab.mixin.Copyable
       obj.simInput = ...
         obj.simInput.setVariable(vname,value);%,...
                         %'workspace',obj.modelName);
+      poo = get_param(obj.modelName,'ModelWorkspace');
+      assignin(poo,vname,value)
     end
+
+    function setVariant(obj,vname,value)
+      obj.simInput = ...
+        obj.simInput.setVariable(vname,value);%,...
+      %'workspace',obj.modelName);
+    end
+
     function o = getVariable(obj,vname)
       o = obj.simInput.getVariable(vname);
     end
@@ -34,12 +43,11 @@ classdef IHateYouSimulink < matlab.mixin.Copyable
       obj.setModelParameter('stopTime',num2str(max(t)));
     end
     
-    
     function setModelParameter(obj,vname,value)
       obj.simInput = ...
         obj.simInput.setModelParameter(vname,value);
     end
-    
+
     function [simOut,logsOut] = sim(obj)
       simOut = sim(obj.simInput);
       logsOut = simlogsout2struct(simOut);
@@ -62,6 +70,8 @@ classdef IHateYouSimulink < matlab.mixin.Copyable
           obj.setVariable(fnames{k},vstruct.(fnames{k}));
         elseif contains('modelparameter',prop,"IgnoreCase",true)
           obj.setModelParameter(fnames{k},vstruct.(fnames{k}));
+        elseif contains('variant',prop,"IgnoreCase",true)
+          obj.setVariant(fnames{k},vstruct.(fnames{k}));
         end
       end
     end
